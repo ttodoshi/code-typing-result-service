@@ -1,0 +1,18 @@
+server:
+  port: 8070
+  address:
+spring:
+  application:
+    name: result-service
+  data:
+    mongodb:
+      uri: mongodb://admin:pass@localhost:27017
+      database: results
+  cloud:
+    consul:
+      discovery:
+        enabled: true
+      host: localhost
+      port: 8500
+
+access-token-secret-key: secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret
