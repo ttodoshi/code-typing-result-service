@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 public class SessionResult implements Serializable {
-    private String textUUID;
+    private String codeExampleUUID;
     private List<Integer> symbolsPerSecond;
     private Integer symbolsPerMinute;
     private ZonedDateTime startTime;

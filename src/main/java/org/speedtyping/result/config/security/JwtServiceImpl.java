@@ -20,7 +20,7 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public UserDto extractUser(String jwtToken) {
         Claims claims = extractAllClaims(jwtToken);
-        String ID = claims.get("ID", String.class);
+        String ID = claims.getSubject();
         String nickname = claims.get("nickname", String.class);
         return new UserDto(
                 ID, nickname

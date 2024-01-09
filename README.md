@@ -9,7 +9,7 @@ endpoints:
 
 ```json
 {
-  "textUUID": "0kldjga03458-sadgj-0-wejga",
+  "codeExampleUUID": "0kldjga03458-sadgj-0-wejga",
   "symbolsPerSecond": [
     1,
     2,

@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 public class GetResultDto {
     private String ID;
-    private String textUUID;
+    private String codeExampleUUID;
     private String userID;
     private List<Integer> symbolsPerSecond;
     private Integer symbolsPerMinute;

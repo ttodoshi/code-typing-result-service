@@ -9,12 +9,12 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Document
+@Document(collection = "results")
 @Data
 public class Result {
     @Id
     private String ID;
-    private String textUUID;
+    private String codeExampleUUID;
     private String userID;
     private List<Integer> symbolsPerSecond;
     private Integer symbolsPerMinute;

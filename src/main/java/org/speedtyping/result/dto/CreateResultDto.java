@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 public class CreateResultDto {
-    private String textUUID;
+    private String codeExampleUUID;
     private List<Integer> symbolsPerSecond;
     private Integer symbolsPerMinute;
     private LocalDateTime startTime;

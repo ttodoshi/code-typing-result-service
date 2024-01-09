@@ -1,12 +1,14 @@
 package org.speedtyping.result.exceptions;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 
 @Data
 public class ErrorResponse {
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS'Z'")
     private LocalDateTime timestamp;
     private Integer status;
     private String error;
@@ -14,7 +16,7 @@ public class ErrorResponse {
     private String path;
 
     public ErrorResponse(Integer status, String error, String message, String path) {
-        timestamp = LocalDateTime.now(ZoneOffset.UTC);
+        this.timestamp = LocalDateTime.now(Clock.systemUTC());
         this.status = status;
         this.error = error;
         this.message = message;

@@ -21,6 +21,8 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtErrorHandlerFilter jwtErrorHandlerFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -39,21 +41,11 @@ public class SecurityConfig {
                 ).exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
                         httpSecurityExceptionHandlingConfigurer
                                 .authenticationEntryPoint(
-                                        jwtAuthenticationEntryPoint()
+                                        jwtAuthenticationEntryPoint
                                 )
-                ).addFilterBefore(jwtErrorHandlerFilter(), LogoutFilter.class)
+                ).addFilterBefore(jwtErrorHandlerFilter, LogoutFilter.class)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
-    }
-
-    @Bean
-    public JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint() {
-        return new JwtAuthenticationEntryPoint();
-    }
-
-    @Bean
-    public JwtErrorHandlerFilter jwtErrorHandlerFilter() {
-        return new JwtErrorHandlerFilter();
     }
 
     @Bean
