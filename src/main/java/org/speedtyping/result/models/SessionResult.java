@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -12,8 +13,8 @@ public class SessionResult implements Serializable {
     private String codeExampleUUID;
     private List<Integer> symbolsPerSecond;
     private Integer symbolsPerMinute;
-    private ZonedDateTime startTime;
-    private ZonedDateTime endTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
     private Duration resultTime;
     private Integer errorsCount;
     private Double accuracy;
