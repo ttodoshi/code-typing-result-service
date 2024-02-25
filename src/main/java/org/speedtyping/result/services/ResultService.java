@@ -6,9 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.speedtyping.result.dto.CreateResultDto;
 import org.speedtyping.result.dto.GetResultDto;
+import org.speedtyping.result.dto.UserDto;
 import org.speedtyping.result.models.Result;
 import org.speedtyping.result.models.SessionResult;
 import org.speedtyping.result.repositories.ResultsRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,7 +26,14 @@ public class ResultService {
 
     private final ModelMapper mapper;
 
-    public List<SessionResult> findSessionResultsBySessionID(HttpSession httpSession) {
+    public List<?> findResults(Authentication authentication, HttpSession httpSession) {
+        return isAnonymous(authentication)
+                ? findSessionResultsBySessionID(httpSession)
+                : findResultsByUserID(((UserDto) authentication.getPrincipal()).getUserID());
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<SessionResult> findSessionResultsBySessionID(HttpSession httpSession) {
         log.debug("received get results unauthorized request");
         List<SessionResult> results = (List<SessionResult>) httpSession.getAttribute("results");
         if (results == null) {
@@ -32,7 +42,7 @@ public class ResultService {
         return results;
     }
 
-    public List<GetResultDto> findResultsByUserID(String userID) {
+    private List<GetResultDto> findResultsByUserID(String userID) {
         log.debug("received get results authorized request");
         return resultsRepository
                 .findResultsByUserIDOrderByEndTime(userID)
@@ -41,25 +51,30 @@ public class ResultService {
                 .toList();
     }
 
+    public String createResult(Authentication authentication, HttpSession httpSession, CreateResultDto createResultDto) {
+        return isAnonymous(authentication)
+                ? createSessionResultBySessionID(
+                httpSession,
+                createResultDto
+        )
+                : createResultByUserID(
+                ((UserDto) authentication.getPrincipal()).getUserID(),
+                createResultDto
+        );
+    }
+
+    @SuppressWarnings("unchecked")
     public String createSessionResultBySessionID(HttpSession httpSession, CreateResultDto createResultDto) {
         log.debug("received create results unauthorized request");
         List<SessionResult> results = (List<SessionResult>) httpSession.getAttribute("results");
         if (results == null) {
-            results = List.of(mapper.map(
-                    createResultDto,
-                    SessionResult.class
-            ));
-            httpSession.setAttribute("results", results);
-        } else {
-            ArrayList<SessionResult> sessionResults = new ArrayList<>(results);
-            sessionResults.add(
-                    mapper.map(
-                            createResultDto,
-                            SessionResult.class
-                    )
-            );
-            httpSession.setAttribute("results", sessionResults);
+            results = new ArrayList<>();
         }
+        results.add(mapper.map(
+                createResultDto,
+                SessionResult.class
+        ));
+        httpSession.setAttribute("results", results);
         return httpSession.getId();
     }
 
@@ -70,5 +85,13 @@ public class ResultService {
         return resultsRepository.save(
                 result
         ).getID();
+    }
+
+    private boolean isAnonymous(Authentication authentication) {
+        return authentication == null ||
+                !authentication.isAuthenticated() ||
+                authentication.getAuthorities().contains(
+                        new SimpleGrantedAuthority("ROLE_ANONYMOUS")
+                );
     }
 }
