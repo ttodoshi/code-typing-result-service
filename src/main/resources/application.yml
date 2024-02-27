@@ -1,6 +1,5 @@
 server:
   port: 8070
-  address:
 spring:
   application:
     name: result-service
