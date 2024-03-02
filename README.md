@@ -1,5 +1,7 @@
-# Speed Typing result service on Java
+# Speed Typing
 
-speed typing results saving service written on java with MongoDB, Redis and Spring Boot
+## Result Service on Java
 
-swagger url: [http://localhost:8070/swagger-ui/index.html](http://localhost:8070/swagger-ui/index.html)
+Results saving service written on Java with MongoDB, Redis and Spring Boot
+
+Swagger URL: [http://localhost:8070/swagger-ui/index.html](http://localhost:8070/swagger-ui/index.html)
