@@ -7,6 +7,11 @@ spring:
     mongodb:
       uri: mongodb://admin:pass@localhost:27017
       database: results
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
   cloud:
     consul:
       discovery:
