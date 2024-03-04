@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.speedtyping.result.dto.CreateResultDto;
 import org.speedtyping.result.services.ResultService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
@@ -59,6 +60,7 @@ public class ResultController {
             @RequestBody CreateResultDto createResultDto) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
+                .contentType(MediaType.TEXT_PLAIN)
                 .body(
                         resultService
                                 .createResult(authentication, httpSession, createResultDto)
