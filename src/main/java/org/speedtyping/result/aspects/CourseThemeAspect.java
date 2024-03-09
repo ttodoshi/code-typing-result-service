@@ -25,7 +25,7 @@ public class CourseThemeAspect {
     public void checkCodeExampleExistsOnCreateResultByUserID(String userID, CreateResultDto createResultDto) {
     }
 
-    @Pointcut(value = "execution(* org.speedtyping.result.services.ResultService.createSessionResultBySessionID(..)) " +
+    @Pointcut(value = "execution(* org.speedtyping.result.services.ResultService.createSessionResultBySession(..)) " +
             "&& args(httpSession, createResultDto)", argNames = "httpSession, createResultDto")
     public void checkCodeExampleExistsOnCreateResultBySessionID(HttpSession httpSession, CreateResultDto createResultDto) {
     }

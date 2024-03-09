@@ -53,7 +53,7 @@ public class ResultService {
 
     public String createResult(Authentication authentication, HttpSession httpSession, CreateResultDto createResultDto) {
         return isAnonymous(authentication)
-                ? createSessionResultBySessionID(
+                ? createSessionResultBySession(
                 httpSession,
                 createResultDto
         )
@@ -64,7 +64,7 @@ public class ResultService {
     }
 
     @SuppressWarnings("unchecked")
-    public String createSessionResultBySessionID(HttpSession httpSession, CreateResultDto createResultDto) {
+    public String createSessionResultBySession(HttpSession httpSession, CreateResultDto createResultDto) {
         log.debug("received create results unauthorized request");
         List<SessionResult> results = (List<SessionResult>) httpSession.getAttribute("results");
         if (results == null) {

@@ -1,12 +1,15 @@
 package org.speedtyping.result.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class CreateResultDto {
     private String codeExampleUUID;
     private List<Integer> symbolsPerSecond;
