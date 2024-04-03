@@ -5,14 +5,14 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.1</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <version>3.2.4</version>
+        <relativePath/>
     </parent>
-    <groupId>org.speedtyping</groupId>
-    <artifactId>speed-typing-result-service</artifactId>
+    <groupId>org.codetyping</groupId>
+    <artifactId>code-typing-result-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>speed-typing-result-service</name>
-    <description>speed-typing-result-service</description>
+    <name>code-typing-result-service</name>
+    <description>code-typing-result-service</description>
     <properties>
         <java.version>21</java.version>
         <spring-cloud.version>2023.0.0</spring-cloud.version>
@@ -137,6 +137,23 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>3.2.1</version>
+                <configuration>
+                    <container>
+                        <mainClass>org.codetyping.result.CodeTypingResultServiceApplication</mainClass>
+                        <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+                    </container>
+                    <from>
+                        <image>openjdk:21-jdk-slim</image>
+                    </from>
+                    <to>
+                        <image>ghcr.io/ttodoshi/code-typing-result-service</image>
+                    </to>
                 </configuration>
             </plugin>
         </plugins>

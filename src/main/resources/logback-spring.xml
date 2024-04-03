@@ -40,7 +40,7 @@
         <appender-ref ref="Console"/>
     </root>
 
-    <logger name="org.speedtyping" level="debug" additivity="false">
+    <logger name="org.codetyping" level="debug" additivity="false">
         <appender-ref ref="LogFile"/>
         <appender-ref ref="Console"/>
     </logger>

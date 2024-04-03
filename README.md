@@ -9,5 +9,5 @@ Swagger URL: [http://localhost:8070/swagger-ui/index.html](http://localhost:8070
 ### Build docker container
 
 ```shell
-docker build . -t ghcr.io/ttodoshi/code-typing-result-service:latest
+mvn compile jib:dockerBuild
 ```
