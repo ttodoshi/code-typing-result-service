@@ -3,10 +3,10 @@ package org.codetyping.result.consumers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.codetyping.result.dto.MigrateSessionResultsDto;
+import org.codetyping.result.models.Result;
 import org.codetyping.result.models.SessionResult;
 import org.codetyping.result.repositories.ResultsRepository;
 import org.modelmapper.ModelMapper;
-import org.codetyping.result.models.Result;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.session.Session;
 import org.springframework.session.SessionRepository;
@@ -43,17 +43,21 @@ public class RabbitMQConsumer {
 
     private void saveResults(String sessionId, MigrateSessionResultsDto migrateSessionResultsDto) {
         Session session = sessionRepository.findById(sessionId);
-
-        List<SessionResult> sessionResults = session.getAttribute("results");
-        if (sessionResults != null) {
-            List<Result> results = sessionResults.stream()
-                    .map(r -> {
-                        Result result = mapper.map(r, Result.class);
-                        result.setUserID(migrateSessionResultsDto.getUserID());
-                        return result;
-                    })
-                    .collect(Collectors.toList());
-            resultsRepository.saveAll(results);
+        if (session == null) {
+            return;
         }
+        List<SessionResult> sessionResults = session.getAttribute("results");
+        if (sessionResults == null) {
+            return;
+        }
+
+        List<Result> results = sessionResults.stream()
+                .map(r -> {
+                    Result result = mapper.map(r, Result.class);
+                    result.setUserID(migrateSessionResultsDto.getUserID());
+                    return result;
+                })
+                .collect(Collectors.toList());
+        resultsRepository.saveAll(results);
     }
 }
