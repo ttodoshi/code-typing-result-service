@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpSession;
 import org.apache.commons.lang3.StringUtils;
 import org.codetyping.result.dto.CreateResultDto;
 import org.codetyping.result.dto.UserDto;
+import org.codetyping.result.models.Result;
+import org.codetyping.result.models.SessionResult;
 import org.codetyping.result.repositories.ResultsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,8 +13,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.codetyping.result.models.Result;
-import org.codetyping.result.models.SessionResult;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 
 import java.time.LocalDateTime;
@@ -54,7 +58,7 @@ public class ResultServiceTest {
         Authentication authentication = mock(Authentication.class);
 
         // test
-        List<?> results = resultService.findResults(authentication, httpSession);
+        Page<?> results = resultService.findResults(authentication, httpSession, 0, 20, "desc", "endTime");
 
         // asserts
         assertNotNull(results);
@@ -80,13 +84,13 @@ public class ResultServiceTest {
                 )
         );
         when(
-                resultsRepository.findResultsByUserIDOrderByEndTimeDesc(userID)
+                resultsRepository.findAllByUserID(userID, PageRequest.of(0, 20, Sort.by(Sort.Direction.DESC, "endTime")))
         ).thenReturn(
-                new ArrayList<>(List.of(new Result()))
+                new PageImpl<>(List.of(new Result()))
         );
 
         // test
-        List<?> results = resultService.findResults(authentication, httpSession);
+        Page<?> results = resultService.findResults(authentication, httpSession, 0, 20, "desc", "endTime");
 
         // asserts
         assertNotNull(results);

@@ -6,16 +6,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.codetyping.result.dto.CreateResultDto;
 import org.codetyping.result.dto.GetResultDto;
 import org.codetyping.result.dto.UserDto;
+import org.codetyping.result.models.Result;
 import org.codetyping.result.models.SessionResult;
 import org.codetyping.result.repositories.ResultsRepository;
 import org.modelmapper.ModelMapper;
-import org.codetyping.result.models.Result;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -26,29 +29,28 @@ public class ResultService {
 
     private final ModelMapper mapper;
 
-    public List<?> findResults(Authentication authentication, HttpSession httpSession) {
+    public Page<?> findResults(Authentication authentication, HttpSession httpSession, Integer page, Integer size, String direction, String sortBy) {
         return isAnonymous(authentication)
                 ? findSessionResultsBySessionID(httpSession)
-                : findResultsByUserID(((UserDto) authentication.getPrincipal()).getUserID());
+                : findResultsByUserID(((UserDto) authentication.getPrincipal()).getUserID(), page, size, direction, sortBy);
     }
 
     @SuppressWarnings("unchecked")
-    private List<SessionResult> findSessionResultsBySessionID(HttpSession httpSession) {
+    private Page<SessionResult> findSessionResultsBySessionID(HttpSession httpSession) {
         log.debug("received get results unauthorized request");
         List<SessionResult> results = (List<SessionResult>) httpSession.getAttribute("results");
         if (results == null) {
-            return Collections.emptyList();
+            return Page.empty();
         }
-        return results.reversed();
+        return new PageImpl<>(results.reversed());
     }
 
-    private List<GetResultDto> findResultsByUserID(String userID) {
+    private Page<GetResultDto> findResultsByUserID(String userID, Integer page, Integer size, String direction, String sortBy) {
         log.debug("received get results authorized request");
+
         return resultsRepository
-                .findResultsByUserIDOrderByEndTimeDesc(userID)
-                .stream()
-                .map(r -> mapper.map(r, GetResultDto.class))
-                .toList();
+                .findAllByUserID(userID, PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sortBy)))
+                .map(r -> mapper.map(r, GetResultDto.class));
     }
 
     public String createResult(Authentication authentication, HttpSession httpSession, CreateResultDto createResultDto) {

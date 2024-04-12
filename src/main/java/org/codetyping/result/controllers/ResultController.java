@@ -35,10 +35,14 @@ public class ResultController {
     })
     public ResponseEntity<?> findResults(
             @CurrentSecurityContext(expression = "authentication") Authentication authentication,
-            HttpSession httpSession
+            HttpSession httpSession,
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestParam(required = false, defaultValue = "20") Integer size,
+            @RequestParam(required = false, defaultValue = "desc") String direction,
+            @RequestParam(required = false, defaultValue = "endTime") String sortBy
     ) {
         return ResponseEntity.ok(
-                resultService.findResults(authentication, httpSession)
+                resultService.findResults(authentication, httpSession, page, size, direction, sortBy)
         );
     }
 
