@@ -35,6 +35,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class ResultServiceTest {
     @Mock
+    private CodeExampleService codeExampleService;
+    @Mock
     private ResultsRepository resultsRepository;
     @Mock
     private ModelMapper mapper;
@@ -43,7 +45,9 @@ public class ResultServiceTest {
 
     @BeforeEach
     public void setUp() {
-        resultService = new ResultService(resultsRepository, mapper);
+        resultService = new ResultService(
+                codeExampleService, resultsRepository, mapper
+        );
     }
 
     @Test
@@ -108,6 +112,9 @@ public class ResultServiceTest {
                 httpSession.getId()
         ).thenReturn(UUID.randomUUID().toString());
         Authentication authentication = mock(Authentication.class);
+        when(
+                codeExampleService.codeExampleExists(any(), any(String.class))
+        ).thenReturn(true);
 
         // test
         String resultID = resultService.createResult(
@@ -140,6 +147,9 @@ public class ResultServiceTest {
                 httpSession.getId()
         ).thenReturn(UUID.randomUUID().toString());
         Authentication authentication = mock(Authentication.class);
+        when(
+                codeExampleService.codeExampleExists(any(), any(String.class))
+        ).thenReturn(true);
 
         // test
         String resultID = resultService.createResult(
@@ -183,6 +193,9 @@ public class ResultServiceTest {
         when(
                 mapper.map(any(CreateResultDto.class), eq(Result.class))
         ).thenReturn(result);
+        when(
+                codeExampleService.codeExampleExists(any(), any(String.class))
+        ).thenReturn(true);
 
         // test
         String resultID = resultService.createResult(

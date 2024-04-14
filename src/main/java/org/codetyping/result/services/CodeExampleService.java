@@ -1,7 +1,9 @@
 package org.codetyping.result.services;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -10,16 +12,20 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class CodeExampleService {
     private final RestTemplate restTemplate;
-    private final DiscoveryClient discoveryClient;
 
-    public Boolean codeExampleExists(final String UUID) {
+    public Boolean codeExampleExists(String bearerToken, final String UUID) {
         try {
-            restTemplate.getForEntity(
-                    discoveryClient
-                            .getInstances("text-service")
-                            .getFirst()
-                            .getUri() + "/api/v1/texts/code-examples/" + UUID + "/",
-                    String.class
+            HttpHeaders headers = new HttpHeaders();
+            if (bearerToken != null && !bearerToken.isEmpty()) {
+                headers.setBearerAuth(bearerToken);
+            }
+
+            restTemplate.exchange(
+                    "http://text-service/api/v1/texts/code-examples/{uuid}/",
+                    HttpMethod.GET,
+                    new HttpEntity<>(headers),
+                    String.class,
+                    UUID
             );
         } catch (HttpClientErrorException e) {
             return false;

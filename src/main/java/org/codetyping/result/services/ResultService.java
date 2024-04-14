@@ -56,7 +56,10 @@ public class ResultService {
     }
 
     public String createResult(Authentication authentication, HttpSession httpSession, CreateResultDto createResultDto) {
-        if (!codeExampleService.codeExampleExists(createResultDto.getCodeExampleUUID())) {
+        if (!codeExampleService.codeExampleExists(
+                (String) authentication.getCredentials(),
+                createResultDto.getCodeExampleUUID()
+        )) {
             throw new CodeExampleNotFoundException(createResultDto.getCodeExampleUUID());
         }
         return isAnonymous(authentication)
