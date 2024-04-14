@@ -27,7 +27,7 @@ public class RabbitMQConsumer {
 
     private final ModelMapper mapper;
 
-    @RabbitListener(queues = "results")
+    @RabbitListener(queues = "results-queue")
     @Transactional
     public void migrateSessionResults(MigrateSessionResultsDto migrateSessionResultsDto) {
         log.debug("migrate session results message");

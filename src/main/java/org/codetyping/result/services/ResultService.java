@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.codetyping.result.dto.CreateResultDto;
 import org.codetyping.result.dto.GetResultDto;
 import org.codetyping.result.dto.UserDto;
+import org.codetyping.result.exceptions.classes.CodeExampleNotFoundException;
 import org.codetyping.result.models.Result;
 import org.codetyping.result.models.SessionResult;
 import org.codetyping.result.repositories.ResultsRepository;
@@ -25,6 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class ResultService {
+    private final CodeExampleService codeExampleService;
     private final ResultsRepository resultsRepository;
 
     private final ModelMapper mapper;
@@ -54,6 +56,9 @@ public class ResultService {
     }
 
     public String createResult(Authentication authentication, HttpSession httpSession, CreateResultDto createResultDto) {
+        if (!codeExampleService.codeExampleExists(createResultDto.getCodeExampleUUID())) {
+            throw new CodeExampleNotFoundException(createResultDto.getCodeExampleUUID());
+        }
         return isAnonymous(authentication)
                 ? createSessionResultBySession(
                 httpSession,
@@ -66,7 +71,7 @@ public class ResultService {
     }
 
     @SuppressWarnings("unchecked")
-    public String createSessionResultBySession(HttpSession httpSession, CreateResultDto createResultDto) {
+    private String createSessionResultBySession(HttpSession httpSession, CreateResultDto createResultDto) {
         log.debug("received create results unauthorized request");
         List<SessionResult> results = (List<SessionResult>) httpSession.getAttribute("results");
         if (results == null) {
@@ -80,7 +85,7 @@ public class ResultService {
         return httpSession.getId();
     }
 
-    public String createResultByUserID(String userID, CreateResultDto createResultDto) {
+    private String createResultByUserID(String userID, CreateResultDto createResultDto) {
         log.debug("received create results authorized request");
         Result result = mapper.map(createResultDto, Result.class);
         result.setUserID(userID);
